@@ -1,8 +1,9 @@
-import 'dart:isolate';
+import 'package:flutter/material.dart';
 
 import 'package:chatz/components/auth_form.dart';
-import 'package:chatz/models/auth_form_data.dart';
-import 'package:flutter/material.dart';
+
+import 'package:chatz/core/models/auth_form_data.dart';
+import 'package:chatz/core/services/auth/auth_mock_service.dart';
 
 class AuthPage extends StatefulWidget {
   const AuthPage({super.key});
@@ -20,8 +21,15 @@ class _AuthPageState extends State<AuthPage> {
 
       if (formData.isLogin) {
         // Login
+        await AuthMockService().login(formData.email, formData.password);
       } else {
         // SignUp
+        await AuthMockService().signUp(
+          formData.name,
+          formData.email,
+          formData.password,
+          formData.image,
+        );
       }
     } catch (error) {
       // Tratar erro
