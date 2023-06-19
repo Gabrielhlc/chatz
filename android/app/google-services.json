@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "966998772542",
+    "project_id": "chatz-58a8a",
+    "storage_bucket": "chatz-58a8a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:966998772542:android:2a334f2c8ee2aded32ba6f",
+        "android_client_info": {
+          "package_name": "com.ghlc.chatz"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "966998772542-00i4v40vg5sisf238d1o2j2mk04umgoi.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBf5AuatAJF8RrdvQUYBEDN5kNx-w73FB0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "966998772542-00i4v40vg5sisf238d1o2j2mk04umgoi.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
