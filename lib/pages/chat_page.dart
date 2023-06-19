@@ -1,6 +1,12 @@
+import 'dart:math';
+
 import 'package:chatz/components/messages.dart';
 import 'package:chatz/components/new_messages.dart';
+import 'package:chatz/core/models/chat_notification.dart';
+import 'package:chatz/core/services/notification/pushNotification_service.dart';
+import 'package:chatz/pages/notification_page.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../core/services/auth/auth_service.dart';
 
@@ -11,9 +17,10 @@ class ChatPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('ChatZ'),
+        title: const Text('ChatZ'),
         actions: [
-          DropdownButton(
+          DropdownButtonHideUnderline(
+            child: DropdownButton(
               icon: Icon(
                 Icons.more_vert,
                 color: Theme.of(context).primaryIconTheme.color,
@@ -37,7 +44,37 @@ class ChatPage extends StatelessWidget {
                 if (value == 'logout') {
                   AuthService().logout();
                 }
-              }),
+              },
+            ),
+          ),
+          Stack(
+            children: [
+              IconButton(
+                onPressed: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (ctx) {
+                        return const NotificationPage();
+                      },
+                    ),
+                  );
+                },
+                icon: const Icon(Icons.notifications),
+              ),
+              Positioned(
+                top: 5,
+                right: 5,
+                child: CircleAvatar(
+                  maxRadius: 10,
+                  backgroundColor: Colors.red.shade800,
+                  child: Text(
+                    '${Provider.of<ChatNotificationService>(context).itemsCount}',
+                    style: const TextStyle(fontSize: 12),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ],
       ),
       body: SafeArea(
@@ -48,6 +85,17 @@ class ChatPage extends StatelessWidget {
           ],
         ),
       ),
+      // floatingActionButton: FloatingActionButton(
+      //   onPressed: () {
+      //     Provider.of<ChatNotificationService>(context, listen: false).add(
+      //       ChatNotification(
+      //         title: 'Mais uma notificação!',
+      //         body: Random().nextDouble().toString(),
+      //       ),
+      //     );
+      //   },
+      //   child: const Icon(Icons.add),
+      // ),
     );
   }
 }
