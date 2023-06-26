@@ -7,7 +7,31 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class ChatFirebaseService implements ChatService {
   @override
   Stream<List<ChatMessage>> messagesStream() {
-    return const Stream<List<ChatMessage>>.empty();
+    final store = FirebaseFirestore.instance;
+    final snapshots = store
+        .collection('chat')
+        .withConverter(
+          fromFirestore: _fromFirestore,
+          toFirestore: _toFirestore,
+        )
+        .orderBy('createdAt', descending: true)
+        .snapshots();
+
+    return snapshots.map((snapshot) {
+      return snapshot.docs.map((doc) {
+        return doc.data();
+      }).toList();
+    });
+
+    // return Stream<List<ChatMessage>>.multi((controller) {
+    //   snapshots.listen((snapshot) {
+    //     List<ChatMessage> lista = snapshot.docs.map((doc) {
+    //       return doc.data();
+    //     }).toList();
+
+    //     controller.add(lista);
+    //   });
+    // });
   }
 
   @override
@@ -15,21 +39,38 @@ class ChatFirebaseService implements ChatService {
     final store = FirebaseFirestore.instance;
 
     final msg = ChatMessage(
-        id: '',
-        text: text,
-        createdAt: DateTime.now(),
-        userId: user.id,
-        userName: user.name,
-        userImageURL: user.imageURL);
+      id: '',
+      text: text,
+      createdAt: DateTime.now(),
+      userId: user.id,
+      userName: user.name,
+      userImageURL: user.imageURL,
+    );
 
-    // ChatMessage => Map<String, dynamic>
     final docRef = await store
         .collection('chat')
-        .withConverter(fromFirestore: _fromFirestore, toFirestore: _toFirestore)
+        .withConverter(
+          fromFirestore: _fromFirestore,
+          toFirestore: _toFirestore,
+        )
         .add(msg);
 
     final doc = await docRef.get();
     return doc.data()!;
+  }
+
+  // ChatMessage => Map<String, dynamic>
+  Map<String, dynamic> _toFirestore(
+    ChatMessage msg,
+    SetOptions? options,
+  ) {
+    return {
+      'text': msg.text,
+      'createdAt': msg.createdAt.toIso8601String(),
+      'userId': msg.userId,
+      'userName': msg.userName,
+      'userImageUrl': msg.userImageURL,
+    };
   }
 
   // Map<String, dynamic> => ChatMessage
@@ -43,18 +84,7 @@ class ChatFirebaseService implements ChatService {
       createdAt: DateTime.parse(doc['createdAt']),
       userId: doc['userId'],
       userName: doc['userName'],
-      userImageURL: doc['userImageURL'],
+      userImageURL: doc['userImageUrl'],
     );
-  }
-
-  // ChatMessage => Map<String, dynamic>
-  Map<String, dynamic> _toFirestore(ChatMessage msg, SetOptions? options) {
-    return {
-      'text': msg.text,
-      'createdAt': msg.createdAt.toIso8601String(),
-      'userId': msg.userId,
-      'userName': msg.userName,
-      'userImageUrl': msg.userImageURL,
-    };
   }
 }
